@@ -19,7 +19,7 @@ import {
   deleteUser,
   getUsersByBlockAndHouseId,
 } from "./controller/adminCreateUserController.js"
-import { postNotification, getAllNotifications } from "./controller/notificationController.js"
+import { postNotification, getAllNotifications, getNotificationById } from "./controller/notificationController.js"
 
 console.log("MONGO_URL:", process.env.MONGO_URL)
 
@@ -70,6 +70,7 @@ app.get("/payments", getAllPayments)
 app.get("/reports", getAllReports)
 app.post("/postNotification", postNotification)
 app.get("/notifications", getAllNotifications)
+app.get("/notifications/:userId", getNotificationById)
 
 app.get("/", (req, res) => {
   console.log("req.body")

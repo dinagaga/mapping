@@ -363,7 +363,7 @@ const OnlinePaymentDialog = ({ setActiveTab, userId }: { setActiveTab: (value: s
     <>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
-          <Button className="w-full">Pay Online</Button>
+          <Button className="w-90">Pay Online</Button>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
@@ -1037,6 +1037,34 @@ function HouseholdOwner() {
   // Optionally, sort by date descending (most recent first)
   filteredPayments.sort((a, b) => new Date(b.paymentDate).getTime() - new Date(a.paymentDate).getTime())
 
+  const [showNotification, setShowNotification] = useState(false)
+  const [dbNotification, setDbNotification] = useState<any[]>([])
+
+  const handleShowNotification = async () => {
+    setShowNotification((prev) => !prev)
+    if (!showNotification) {
+      try {
+        // Fetch notifications for the current user
+        const response = await axios.get(`${API_BASE_URL}/notifications/${userId}`)
+        console.log("Notifications response:", response.data) 
+        console.log("userId:", userId) 
+        // If response.data has a notifications array, use it
+        if (response.data && Array.isArray(response.data.notifications)) {
+          setDbNotification(response.data.notifications)
+        } else if (Array.isArray(response.data)) {
+          setDbNotification(response.data)
+        } else if (response.data) {
+          setDbNotification([response.data])
+        } else {
+          setDbNotification([])
+        }
+      } catch (error) {
+        console.error("Error fetching notifications:", error)
+        setDbNotification([])
+      }
+    }
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b bg-background/95 backdrop-blur-sm sticky top-0 z-10">
@@ -1048,9 +1076,31 @@ function HouseholdOwner() {
             <Badge variant="outline" className="bg-primary/10">
               User ID: {userId}
             </Badge>
-            <Button variant="ghost" size="icon">
-              <Bell className="h-5 w-5" />
+            <Button variant="ghost" size="icon" onClick={handleShowNotification}>
+              <Bell className="h-5 w-5"/>
             </Button>
+
+           {showNotification && (
+              <div className="absolute top-16 right-10 bg-white shadow-lg rounded-lg p-4 h-64 w-96 z-10">
+                <Label className="text-2xl font-semibold">Notifications</Label>
+
+                <div className="flex flex-col space-y-2 mt-2 overflow-y-auto max-h-48">
+                  {dbNotification && dbNotification.length > 0 ? (
+                    dbNotification.map((notification, index) => (
+                      <div key={index} className="bg-gray-100 p-3 rounded-md shadow-sm">
+                        <p className="font-medium">{notification.subject}</p>
+                        <p className="text-sm text-gray-600">{notification.message}</p>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center text-muted-foreground">
+                      No notifications available.
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
           </div>
         </div>
       </header>
@@ -1274,7 +1324,7 @@ function HouseholdOwner() {
                       </div>
                     </CardContent>
                     <CardFooter>
-                      <Button className="w-full gap-2">
+                      <Button className="w-90 gap-2 flex mx-auto">
                         <Info className="h-4 w-4" />
                         Learn More About Our System
                       </Button>
@@ -1318,26 +1368,6 @@ function HouseholdOwner() {
                       <span>Refresh</span>
                     </Button>
                   </div>
-
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Emergency Contact</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="p-3 bg-red-100 rounded-full">
-                            <Phone className="h-5 w-5 text-red-500" />
-                          </div>
-                          <div>
-                            <p className="font-medium">Community Emergency Line</p>
-                            <p className="text-sm text-muted-foreground">Available 24/7</p>
-                          </div>
-                        </div>
-                        <Button variant="destructive">Call Now</Button>
-                      </div>
-                    </CardContent>
-                  </Card>
 
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
@@ -1644,7 +1674,26 @@ function HouseholdOwner() {
                               <p className="text-sm text-muted-foreground">Available 24/7</p>
                             </div>
                           </div>
-                          <Button variant="destructive">Call Now</Button>
+                          <Dialog>
+                                <DialogTrigger asChild>
+                                  <Button variant="destructive">Call Now</Button>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-[500px]">
+                                  <DialogHeader>
+                                    <DialogTitle className="text-2xl font-serif">Call This Numbers</DialogTitle>
+                                  </DialogHeader>
+                                    <div className="flex">
+                                      <label className="w-90" htmlFor="">911 – National Emergency Hotline (Police, Fire, Medical)</label>
+                                      <Button className="w-20" variant="destructive">Call Now</Button>
+                                    </div>
+                                    <div className="flex">
+                                      <label htmlFor="priority" className="w-90">117 / 911 – PNP Emergency Hotline</label>
+                                      <Button className="w-20" variant="destructive">Call Now</Button>
+                                    </div>
+                                  <DialogFooter>
+                                  </DialogFooter>
+                                </DialogContent>
+                              </Dialog>
                         </div>
                       </CardFooter>
                     </Card>
@@ -1914,7 +1963,7 @@ function HouseholdOwner() {
                           </div>
 
                           <div className="flex mt-6">
-                            <Button type="submit" className="w-full" disabled={loading}>
+                            <Button type="submit" className="w-100" disabled={loading}>
                               {loading ? (
                                 <div className="flex items-center gap-2">
                                   <Loader2 className="h-4 w-4 animate-spin" />

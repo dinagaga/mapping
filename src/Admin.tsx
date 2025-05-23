@@ -784,7 +784,7 @@ function AdminDashboard() {
           : notification.recipients.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase()),
       subject: notification.subject,
       message: notification.message,
-      priority: newNotification.priority.charAt(0).toUpperCase() + newNotification.priority.slice(1),
+      priority: notification.priority.charAt(0).toUpperCase() + notification.priority.slice(1),
     }
 
     // Send the notification to the database

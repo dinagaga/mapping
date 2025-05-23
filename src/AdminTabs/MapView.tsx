@@ -30,6 +30,7 @@ import {
 } from "../components/subdivision-data"
 
 import House from "../components/house"
+import { Label } from "@radix-ui/react-dropdown-menu"
 
 const MapInitializer = () => {
   const map = useMap()
@@ -355,6 +356,13 @@ const PinColorPicker = () => {
     { status: "Commercial", color: "#94A3B8", label: "Commercial Facilities (Gray)" },
   ]
 
+  const blockColors = [
+    { block: "Block A", color: "Violet", label: "Block A (Violet)" },
+    { block: "Block B", color: "Pink", label: "Block B (Pink)" },
+    { block: "Block C", color: "Green", label: "Block C (Green)" },
+    { block: "Block D", color: "Orange", label: "Block D (Orange)" },
+  ]
+
   return (
     <div className="absolute bottom-4 right-4 z-[1000]">
       <Button variant="outline" className="bg-background/80 backdrop-blur-sm" onClick={() => setIsOpen(!isOpen)}>
@@ -366,9 +374,24 @@ const PinColorPicker = () => {
         <Card className="absolute bottom-12 right-0 w-64 p-2">
           <CardHeader className="p-2">
             <CardTitle className="text-sm">Pin Color Legend</CardTitle>
+            <Label>Blocks</Label>
+            {blockColors.map((item, index) => (
+                <div key={index} className="flex items-center gap-2">
+                  <div
+                    className="w-4 h-4 rounded-full"
+                    style={{
+                      backgroundColor: item.color,
+                      border: item.color === "#FFFFFF" ? "1px solid #e2e8f0" : "none",
+                    }}
+                  ></div>
+                  <span className="text-xs">{item.label}</span>
+                </div>
+              ))}
           </CardHeader>
           <CardContent className="p-2">
             <div className="grid gap-2">
+              
+              <Label>Houses</Label>
               {statusColors.map((item, index) => (
                 <div key={index} className="flex items-center gap-2">
                   <div
