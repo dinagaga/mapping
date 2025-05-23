@@ -1536,7 +1536,7 @@ function HouseholdOwner() {
                 {/* Emergency Request Tab */}
                 <TabsContent value="emergency" className="space-y-4">
                   <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-bold">Emergency Request</h2>
+                    <h2 className="text-xl font-bold">Emergency Calls</h2>
                     <Badge variant="destructive">Urgent</Badge>
                   </div>
 
@@ -1587,82 +1587,6 @@ function HouseholdOwner() {
                     </Card>
                   ) : (
                     <Card className="border-red-200">
-                      <CardHeader className="bg-red-50 border-b border-red-100">
-                        <CardTitle className="text-red-700 flex items-center gap-2">
-                          <AlertTriangle className="h-5 w-5" />
-                          Submit Emergency Request
-                        </CardTitle>
-                        <CardDescription className="text-red-600">
-                          This will be sent immediately to the community management team.
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent className="pt-6">
-                        <form onSubmit={handleEmergency}>
-                          <div className="grid gap-4">
-                            <div className="grid gap-2">
-                              <Label htmlFor="emergency-type">Emergency Type</Label>
-                              <Select
-                                name="type"
-                                value={values.type}
-                                onValueChange={(value) => setValues((prev) => ({ ...prev, type: value }))}
-                              >
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select type" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="medical">Medical Emergency</SelectItem>
-                                  <SelectItem value="fire">Fire</SelectItem>
-                                  <SelectItem value="security">Security Threat</SelectItem>
-                                  <SelectItem value="utility">Critical Utility Failure</SelectItem>
-                                  <SelectItem value="other">Other</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            <div className="grid gap-2">
-                              <Label htmlFor="emergency-description">Brief Description</Label>
-                              <Textarea
-                                id="emergency-description"
-                                name="description"
-                                value={values.description}
-                                onChange={(e) => setValues((prev) => ({ ...prev, description: e.target.value }))}
-                                placeholder="Describe the emergency situation..."
-                                className="min-h-[120px]"
-                              />
-
-                              <Input
-                                id="contact-number"
-                                name="contact"
-                                value={values.contact}
-                                onChange={(e) => setValues((prev) => ({ ...prev, contact: e.target.value }))}
-                                placeholder="Your contact number"
-                              />
-
-                              {/* Hidden input with requester info */}
-                              <Input type="hidden" name="requester" value={values.requester} />
-                            </div>
-
-                            {error && (
-                              <div className="p-3 bg-red-50 border border-red-200 rounded-md text-red-600 text-sm">
-                                <AlertTriangle className="h-4 w-4 inline mr-2" />
-                                {error}
-                              </div>
-                            )}
-                          </div>
-
-                          <div className="flex flex-col gap-4 mt-6">
-                            <Button type="submit" className="w-80 bg-red-500 hover:bg-red-600 " disabled={loading}>
-                              {loading ? (
-                                <div className="flex items-center gap-2">
-                                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"></div>
-                                  Submitting...
-                                </div>
-                              ) : (
-                                "Submit Emergency Request"
-                              )}
-                            </Button>
-                          </div>
-                        </form>
-                      </CardContent>
                       <CardFooter className="block">
                         <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center justify-between w-full">
                           <div className="flex items-center gap-3">
