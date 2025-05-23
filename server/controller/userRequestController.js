@@ -1,11 +1,19 @@
 import { Request } from "../models/userRequest.js"
+import { adminCreateUser } from "../models/adminCreateUser.js"
 
 const postRequest = async (req, res) => {
   try {
-    const { type, desc, date, location, priority, requester, houseId } = req.body
+    const { type, desc, date, location, priority, requester } = req.body
 
-    if (!type || !desc || !date || !location || !priority || !requester || !houseId) {
+    if (!type || !desc || !date || !location || !priority || !requester) {
       return res.status(400).json({ message: "Please fill all fields" })
+    }
+
+    const lastRequest = await adminCreateUser.findOne({ _id: requester }).sort({ createdAt: -1 });
+    const houseId = lastRequest ? lastRequest.houseId : null;
+
+    if (!houseId) {
+      return res.status(400).json({ message: "No houseId found for this requester" });
     }
 
     const newRequest = await Request.create({

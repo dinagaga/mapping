@@ -935,7 +935,7 @@ function HouseholdOwner() {
         return
       }
 
-      console.log("Submitting request:", requestValue)
+      console.log("Submitting request:", requestValue.requester)
 
       const response = await axios.post(`${API_BASE_URL}/postRequest`, {
         type: requestValue.type,
@@ -956,7 +956,7 @@ function HouseholdOwner() {
           location: "",
           priority: "",
           requester: `${userId}`,
-          houseId: householdData.id,
+          houseId: "",
         })
         setRequestSubmitted(true)
       }
