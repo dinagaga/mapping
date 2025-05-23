@@ -5,7 +5,7 @@ import express from "express"
 import cors from "cors"
 import mongoose from "mongoose"
 import { postEmergency } from "./controller/emergencyController.js"
-import { postRequest, getRequestsByRequester } from "./controller/userRequestController.js"
+import { postRequest, getRequestsByRequester, getAllRequests } from "./controller/userRequestController.js"
 import { postReport, getReportsByRequester, getAllReports } from "./controller/reportController.js"
 import { postPayment, getPaymentsByUserId, getAllPayments } from "./controller/paymentController.js"
 import { postConstruction, getAllConstructions } from "./controller/constructionController.js"
@@ -39,7 +39,7 @@ app.use(
 app.use(express.json())
 
 // Authentication Routes - Updated
-app.post("/postadminCreateUser", customerCreateUser)
+app.post("/postadminCreateUser", postadminCreateUser)
 app.post("/login", adminLoginUser)
 
 // Household Owner Routes
@@ -47,6 +47,7 @@ app.post("/postEmergency", postEmergency)
 
 app.post("/postRequest", postRequest)
 app.get("/requests/:requesterId", getRequestsByRequester)
+app.get("/requests", getAllRequests)
 
 app.post("/postReport", postReport)
 app.get("/reports/:requesterId", getReportsByRequester)

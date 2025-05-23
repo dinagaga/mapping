@@ -1030,6 +1030,13 @@ function HouseholdOwner() {
       householdData.electricityConsumption.previous) *
     100
 
+  // Filter payments to only show those for the current logged-in user
+  const filteredPayments = payments.filter(
+    (payment) => payment.userId === userId
+  )
+  // Optionally, sort by date descending (most recent first)
+  filteredPayments.sort((a, b) => new Date(b.paymentDate).getTime() - new Date(a.paymentDate).getTime())
+
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b bg-background/95 backdrop-blur-sm sticky top-0 z-10">
@@ -1210,61 +1217,6 @@ function HouseholdOwner() {
                         </div>
                       </div>
                     </div>
-                  </div>
-
-                  <div className="grid gap-6 md:grid-cols-3">
-                    <Card>
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-lg">Community Mapping</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <p className="text-muted-foreground text-sm">
-                          Interactive maps of your subdivision with detailed information about facilities, services, and
-                          infrastructure.
-                        </p>
-                      </CardContent>
-                      <CardFooter>
-                        <Button variant="outline" className="w-full gap-2">
-                          <Map className="h-4 w-4" />
-                          Explore Map
-                        </Button>
-                      </CardFooter>
-                    </Card>
-
-                    <Card>
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-lg">Utility Management</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <p className="text-muted-foreground text-sm">
-                          Track and manage your household utilities including water, electricity, and waste management
-                          services.
-                        </p>
-                      </CardContent>
-                      <CardFooter>
-                        <Button variant="outline" className="w-full gap-2">
-                          <Zap className="h-4 w-4" />
-                          View Utilities
-                        </Button>
-                      </CardFooter>
-                    </Card>
-
-                    <Card>
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-lg">Community Services</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <p className="text-muted-foreground text-sm">
-                          Access community services, report incidents, and stay connected with your neighborhood.
-                        </p>
-                      </CardContent>
-                      <CardFooter>
-                        <Button variant="outline" className="w-full gap-2">
-                          <Users className="h-4 w-4" />
-                          Community Hub
-                        </Button>
-                      </CardFooter>
-                    </Card>
                   </div>
 
                   <Card>
@@ -1668,7 +1620,7 @@ function HouseholdOwner() {
                           </div>
 
                           <div className="flex flex-col gap-4 mt-6">
-                            <Button type="submit" className="w-full bg-red-500 hover:bg-red-600" disabled={loading}>
+                            <Button type="submit" className="w-80 bg-red-500 hover:bg-red-600 " disabled={loading}>
                               {loading ? (
                                 <div className="flex items-center gap-2">
                                   <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"></div>
@@ -1822,7 +1774,7 @@ function HouseholdOwner() {
                           </div>
 
                           <div className="flex mt-6">
-                            <Button type="submit" className="w-full" disabled={loading}>
+                            <Button type="submit" className="w-100" disabled={loading}>
                               {loading ? (
                                 <div className="flex items-center gap-2">
                                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -1979,7 +1931,7 @@ function HouseholdOwner() {
                   )}
                 </TabsContent>
 
-                {/* Payment Logs Tab */}
+                               {/* Payment Logs Tab */}
                 <TabsContent value="payment-logs" className="space-y-4">
                   <div className="flex justify-between items-center mb-4">
                     <h2 className="text-xl font-bold">Payment History</h2>
@@ -2007,7 +1959,7 @@ function HouseholdOwner() {
                               strokeWidth={2}
                               d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                             />
-                          </svg>
+                        </svg>
                         )}
                         <span>Refresh</span>
                       </Button>
@@ -2092,7 +2044,7 @@ function HouseholdOwner() {
                           </div>
                         ))}
 
-                        {payments.length === 0 && householdData.paymentLogs.length === 0 && (
+                        {filteredPayments.length === 0 && householdData.paymentLogs.length === 0 && (
                           <div className="p-8 text-center text-muted-foreground border rounded-lg">
                             No payment history found. Make your first payment now.
                           </div>

@@ -28,6 +28,7 @@ import {
   Pencil,
   Trash2,
   ClipboardCopy,
+  Inbox,
 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -320,10 +321,39 @@ function AdminDashboard() {
     status: string
   }
 
+
   // Add these state variables after the notifications state (around line 235):
   const [dbUsers, setDbUsers] = useState<User[]>([])
   const [fetchingUsers, setFetchingUsers] = useState(false)
 
+  type Request ={
+    _id?: string
+    type: string
+    desc: string
+    date: string
+    location: string
+    priority: string
+    requester: string
+    houseId: string
+  }
+
+  const [dbRequest, setdbRequest] = useState<Request[]>([])
+  const [fetchingRequest, setFetchingRequest] = useState(false)
+  // Function to fetch all payments for admin view
+  const fetchAllRequest = async () => {
+    try {
+      setFetchingRequest(true)
+      const response = await axios.get(`${API_BASE_URL}/requests`)
+      if (response.data) {
+        setdbRequest(response.data)
+      }
+    } catch (error) {
+      console.error("Error fetching all requests:", error)
+      toast.error("Failed to fetch payment history")
+    } finally {
+      setFetchingRequest(false)
+    }
+  }
   // Function to fetch all payments for admin view
   const fetchAllPayments = async () => {
     try {
@@ -566,6 +596,12 @@ function AdminDashboard() {
     }
   }, [activeTab])
 
+  useEffect(() => {
+    if (activeTab === "requests") {
+      fetchAllRequest()
+    }
+  }, [activeTab])
+
   // Add this useEffect to load reports when the incidents tab is active
   useEffect(() => {
     if (activeTab === "incidents") {
@@ -748,7 +784,7 @@ function AdminDashboard() {
           : notification.recipients.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase()),
       subject: notification.subject,
       message: notification.message,
-      priority: notification.priority.charAt(0).toUpperCase() + notification.priority.slice(1),
+      priority: newNotification.priority.charAt(0).toUpperCase() + newNotification.priority.slice(1),
     }
 
     // Send the notification to the database
@@ -1153,6 +1189,12 @@ function AdminDashboard() {
               <SidebarGroupLabel>Management</SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton isActive={activeTab === "requests"} onClick={() => setActiveTab("requests")}>
+                      <Inbox className="h-4 w-4" />
+                      <span>Requests</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton isActive={activeTab === "incidents"} onClick={() => setActiveTab("incidents")}>
                       <AlertTriangle className="h-4 w-4" />
@@ -1716,6 +1758,65 @@ function AdminDashboard() {
                     </Card>
                   </>
                 )}
+              </TabsContent>
+
+              {/* Request Tab */}
+                <TabsContent value="requests" className="space-y-4">
+
+                 <div className="flex justify-between items-center">
+                  <h2 className="text-2xl font-bold">House-Hold Requests</h2>
+                  
+                </div>
+
+                <Card>
+                  <CardContent className="pt-6">
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 className="font-medium">List of Requests</h3>
+                      <Button variant="outline" size="sm" onClick={fetchAllRequest} disabled={fetchingRequest}>
+                        {fetchingRequest ? "Loading..." : "Refresh"}
+                      </Button>
+                    </div>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Type</TableHead>
+                          <TableHead>House ID</TableHead>
+                          <TableHead>Description</TableHead>
+                          <TableHead>Location</TableHead>
+                          <TableHead>Priority</TableHead>
+                          <TableHead>Date</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {dbRequest && dbRequest.length > 0 ? (
+                          dbRequest.map((requests, index) => (
+                            <TableRow key={requests._id || index}>
+                              <TableCell>{requests.type}</TableCell>
+                              <TableCell>{requests.houseId}</TableCell>
+                              <TableCell>{requests.desc}</TableCell>
+                              <TableCell>{requests.location}</TableCell>
+                              <TableCell>{requests.priority}</TableCell>
+                              <TableCell>
+                                {new Date(requests.date).toLocaleDateString('en-US', {
+                                  month: 'long',
+                                  day: 'numeric',
+                                  year: 'numeric',
+                                })}
+                            </TableCell>
+                            </TableRow>
+                          ))
+                        ) : (
+                          <TableRow>
+                            <TableCell colSpan={8} className="text-center py-4">
+                              {fetchingPayments ? "Loading payments..." : "No Requests records found"}
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                </Card>
+                
               </TabsContent>
 
               {/* Payments Tab */}
@@ -3512,5 +3613,6 @@ const NotifyHouseholdDialog = ({ onSendNotification }: { onSendNotification: (no
     </Dialog>
   )
 }
+
 
 export default AdminDashboard
