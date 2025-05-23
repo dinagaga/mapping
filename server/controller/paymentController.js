@@ -1,12 +1,12 @@
 import { Payment } from "../models/payment.js"
 import { User } from "../models/user.js"
+import { adminCreateUser } from "../models/adminCreateUser.js"
 
 // Function to post a new payment
 const postPayment = async (req, res) => {
   try {
     const {
       userId,
-      houseId,
       paymentType,
       amount,
       processingFee,
@@ -19,6 +19,13 @@ const postPayment = async (req, res) => {
     // Validate required fields
     if (!userId || !amount || !paymentType || !paymentDate) {
       return res.status(400).json({ message: "Required fields are missing" })
+    }
+
+    const user = await adminCreateUser.findOne({ _id: userId });
+    const houseId = user ? user.houseId : null;
+
+    if (!houseId) {
+      return res.status(400).json({ message: "No houseId found for this requester" });
     }
 
     // Create a new payment

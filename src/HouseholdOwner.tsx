@@ -320,7 +320,6 @@ const OnlinePaymentDialog = ({ setActiveTab, userId }: { setActiveTab: (value: s
       // Create payment data object
       const paymentData = {
         userId,
-        houseId: householdData.id,
         paymentType,
         amount: getPaymentAmount(),
         processingFee,
@@ -334,6 +333,7 @@ const OnlinePaymentDialog = ({ setActiveTab, userId }: { setActiveTab: (value: s
         paymentDate: new Date().toISOString(),
       }
 
+      console.log("Processing payment:", paymentData.userId)
       // Post to MongoDB
       await axios.post(`${API_BASE_URL}/postPayment`, paymentData)
 
