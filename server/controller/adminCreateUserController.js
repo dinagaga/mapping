@@ -13,7 +13,7 @@ const postadminCreateUser = async (req, res) => {
       type,
       block,
       houseId,
-      status = "Active",
+      status = "Pending",
       password,
     } = req.body
 
@@ -92,7 +92,7 @@ const customerCreateUser = async (req, res) => {
         firstname: newUser.firstname,
         lastname: newUser.lastname,
         email: newUser.email,
-        status: newUser.status,
+        status: "Pending",
       },
     })
   } catch (error) {
