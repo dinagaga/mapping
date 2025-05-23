@@ -1081,10 +1081,10 @@ function HouseholdOwner() {
             </Button>
 
            {showNotification && (
-              <div className="absolute top-16 right-10 bg-white shadow-lg rounded-lg p-4 h-64 w-96 z-10">
+              <div className="absolute top-16 right-10 bg-white shadow-lg rounded-lg p-4  w-96 z-10 ">
                 <Label className="text-2xl font-semibold">Notifications</Label>
 
-                <div className="flex flex-col space-y-2 mt-2 overflow-y-auto max-h-48">
+                <div className="flex flex-col space-y-2 mt-2 h-200 overflow-y-auto">
                   {dbNotification && dbNotification.length > 0 ? (
                     dbNotification.map((notification, index) => (
                       <div key={index} className="bg-gray-100 p-3 rounded-md shadow-sm">
